@@ -1,0 +1,83 @@
+-- phpMyAdmin SQL Dump
+-- version 4.4.10
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Aug 17, 2016 at 10:33 PM
+-- Server version: 5.5.42
+-- PHP Version: 7.0.0
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `selfapp`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entries`
+--
+
+CREATE TABLE `entries` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` date NOT NULL,
+  `active` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pushes`
+--
+
+CREATE TABLE `pushes` (
+  `id` int(11) NOT NULL,
+  `entry_id` int(11) NOT NULL,
+  `pushed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `entries`
+--
+ALTER TABLE `entries`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pushes`
+--
+ALTER TABLE `pushes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `entry_foreign_key` (`entry_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `entries`
+--
+ALTER TABLE `entries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `pushes`
+--
+ALTER TABLE `pushes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `pushes`
+--
+ALTER TABLE `pushes`
+  ADD CONSTRAINT `pushes_ibfk_1` FOREIGN KEY (`entry_id`) REFERENCES `entries` (`id`);

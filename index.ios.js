@@ -1,209 +1,129 @@
-///**
-// * Sample React Native App
-// * https://github.com/facebook/react-native
-// * @flow
-// */
-//
-//import React, { Component } from 'react';
-//import {
-//    AppRegistry,
-//    StyleSheet,
-//    Text,
-//    View, TextInput, AsyncStorage, TouchableHighlight
-//} from 'react-native';
-//
-//
-//
-//var STORAGE_KEY = '@firstTime';
-//var SQLite = require('react-native-sqlite-storage');
-//SQLite.DEBUG(true);
-//SQLite.enablePromise(true);
-//SQLite.enablePromise(false);
-//
-//var database_name = "Test.db";
-//var database_version = "1.0";
-//var database_displayname = "SQLite Test Database";
-//var database_size = 200000;
-//var db;
-//
-//
-//
-//class SelfApp extends Component {
-//
-//    constructor(props){
-//        super(props)
-//        this.state = {
-//            name: "Mosed",
-//            error: "",
-//            title: "Test Title",
-//            body: "Kingship is the best. Perfection is impossible",
-//            showInput: false
-//        }
-//    }
-//
-//
-//    componentDidMount() {
-//        this._loadInitialState().done();
-//        this.openDatabase();
-//    }
-//
-//    async _loadInitialState() {
-//        try {
-//            var value = await AsyncStorage.getItem(STORAGE_KEY);
-//            if (value !== null){
-//                alert('Recovered selection from disk: ' + value);
-//            } else {
-//                this.setState({showInput: true});
-//            }
-//        } catch (error) {
-//            alert('AsyncStorage error: ' + error.message);
-//        }
-//    }
-//
-//
-
-//
-//    onPress(){
-//        this.saveEntry();
-//        //var name = this.state.name;
-//        //
-//        //if (name.length() > 0) this.setState({shownInput: false})
-//    }
-//
-//
-//    saveEntry(){
-//        db.transaction((tx) => {
-//            tx.executeSql('INSERT INTO entries (title, text) VALUES ("Test Title", "The less you care, the happier you will hbe");', [], (tx, results) => {
-//                console.log("Query completed");
-//
-//                // Get rows with Web SQL Database spec compliance.
-//
-//                var len = results.rows.length;
-//                for (let i = 0; i < len; i++) {
-//                    let row = results.rows.item(i);
-//                    console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`);
-//                }
-//
-//                // Alternatively, you can use the non-standard raw method.
-//
-//                /*
-//                 let rows = results.rows.raw(); // shallow copy of rows Array
-//
-//                 rows.map(row => console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`));
-//                 */
-//            });
-//        });
-//    }
-//
-//    openDatabase(){
-//        db = SQLite.openDatabase({name : "db", createFromLocation : 1}, () =>{
-//            console.log("Database OPENED");
-//        }, (err) => {
-//            console.log("SQL Error: " + err);
-//        });
-//    }
-//}
-
-//AppRegistry.registerComponent('SelfApp', () => SelfApp);
-
-/**
- * Sample React Native App with SQLite
- * Demo the react-native-sqlite-storage
- *
- *
- */
-'use strict';
-
 import React, { Component } from 'react';
-import {
-    AppRegistry,
-    StyleSheet,
-    Text, ListView, Dimensions,
-    View, TextInput, AsyncStorage, Platform, StatusBar, TouchableOpacity, Image
+import { PanResponder, AppRegistry, Platform, StatusBar, AppState, PushNotificationIOS, AlertIOS, AsyncStorage, NativeModules} from 'react-native';
 
-} from 'react-native';
+import { Router, Scene, Actions } from 'react-native-router-flux';
+
+import Main from './main.js'
+import NewEntry from './new-entry.js'
+import Entries from './entries.js'
+import Settings from './settings.js'
+import Welcome from './welcome.js'
+
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var PushNotification = require('react-native-push-notification');
 
 var SQLite = require('react-native-sqlite-storage');
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 SQLite.enablePromise(false);
 
-var {width: windowWidth, height:windowHeight} = Dimensions.get('window');
-var NAVBAR_HEIGHT = (Platform.OS === 'ios') ? 64 : 54;
-
 
 var database_name = "SelfApp.db";
 var database_version = "1.0";
 var database_displayname = "SQLite Test Database";
 var database_size = 200000;
-var db;
+var db, me;
 
-var SQLiteDemo = React.createClass({
-    getInitialState(){
-        return {
-            progress: [],
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            }),
+const navigationBarStyle = {
+    backgroundColor: '#CB1B22',
+    overflow: "hidden",
+    position: "absolute",
+    top: 0, left: 0, right: 0
+};
 
-            name: "Mosed",
-            error: "",
-            title: "Test Title",
-            body: "Kingship is the best. Perfection is impossible",
-            showInput: false
-        };
-    },
+const titleStyle = {
+    color: "#FFFFFF",
+    fontWeight:"500",
+    fontSize: 17, textAlign:"center",
+};
+
+class SelfApp extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            db:null,
+            demo: true
+        }
+    }
+
+    componentDidMount(){
+        me = this;
+        if (Platform.OS === "ios") StatusBar.setBarStyle('light-content', true);
+        this.init();
+
+        PushNotification.configure({
+            onNotification: function(notification) {
+                AlertIOS.alert(
+                    notification.title,
+                    notification.message,
+                    [{
+                        text: 'Dismiss',
+                        onPress: null,
+                    }]
+                );
+            }
+        });
+
+        //AppState.addEventListener('change', this._handleAppStateChange);
+
+        //this.checkCurrent();
+    }
 
     componentWillUnmount(){
         this.closeDatabase();
-    },
-
-
-    componentDidMount(){
-        if (Platform.OS === "ios") StatusBar.setBarStyle('light-content', true);
-        this.state.progress = ["Starting SQLite Demo"];
-        this.setState(this.state);
-        this.init();
-        //this.deleteDatabase();
-    },
-
+    }
 
     init(){
-        this.state.progress.push("Opening database ...");
-        this.setState(this.state);
+        //alert("Opening database ...");
         db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
+        this.setState({db: db});
         this.populateDatabase(db);
-    },
+
+    }
+
 
     populateDatabase(db){
         var that = this;
-        that.state.progress.push("Database integrity check");
-        that.setState(that.state);
+        //alert("Database integrity check");
+        //that.setState(that.state);
         db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
             function () {
-                that.state.progress.push("Database is ready...");
-                that.setState(that.state);
+                //alert("Database is ready...");
+
+                //that.setState(that.state);
             },
             function (error) {
                 console.log("received version error:", error);
-                that.state.progress.push("Database not yet ready ... populating data");
-                that.setState(that.state);
+                //alert("Database not yet ready ... populating data");
+                //that.setState(that.state);
                 db.transaction(that.populateDB, that.errorCB, function () {
-                    that.state.progress.push("Database populated ...");
-                    that.setState(that.state);
+                    //alert("Database populated ...");
+                    //that.setState(that.state);
+
+
+                    //if (this.state.demo){
+                    //    alert("Sample entries have been added for demo purpose.");
+                    //
+                    //    var data = ["Freedom", "​You have two paths in love and life. \n1)Live Your Dreams.  \n \n 2)Live other people's dreams."];
+                    //    var data1 = ["Success", "​You will fail many times but who is counting"];
+                    //
+                    //    db.transaction((tx) => {
+                    //        tx.executeSql('INSERT INTO entries (title, text, active) VALUES ("'+data[0]+'", "'+data[1]+'", 1);', [], (tx, results) => {});
+                    //        tx.executeSql('INSERT INTO entries (title, text, active) VALUES ("'+data1[0]+'", "'+data1[1]+'", 1);', [], (tx, results) => {});
+                    //    });
+                    //
+                    //}
                 });
             });
-    },
+    }
 
     populateDB(tx) {
-        this.state.progress.push("Executing DROP stmts");
-        this.setState(this.state);
+        //alert("Executing DROP stmts");
 
         tx.executeSql('DROP TABLE IF EXISTS entries;');
         tx.executeSql('DROP TABLE IF EXISTS pushes;');
 
-        this.state.progress.push("Executing CREATE stmts");
-        this.setState(this.state);
+        //alert("Executing CREATE stmts");
 
         tx.executeSql('CREATE TABLE IF NOT EXISTS Version( '
             + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB);
@@ -221,161 +141,133 @@ var SQLiteDemo = React.createClass({
             + 'entry_id int(11) NOT NULL, '
             + 'pushed_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,'
             + 'FOREIGN KEY ( entry_id ) REFERENCES entries ( id ));', []);
-    },
 
-    saveEntry(){
-        db.transaction((tx) => {
-            tx.executeSql('INSERT INTO entries (title, text, active) VALUES ("Test Title", "The less you care, the happier you will hbe", 1);', [], (tx, results) => {
-                alert("Insert completed");
-            });
+        //alert("Executing INSERT stmts");
+
+
+        var data = ["Freedom", "​You have two paths in love and life. \n1)Live Your Dreams.  \n \n 2)Live other people's dreams."];
+        var data1 = ["Success", "​You will fail many times but who is counting"];
+
+
+        if (me.state.demo) {
+            tx.executeSql('INSERT INTO entries (title, text, active) VALUES ("' + data[0] + '", "' + data[1] + '", 1);', []);
+            tx.executeSql('INSERT INTO entries (title, text, active) VALUES ("' + data1[0] + '", "' + data1[1] + '", 1);', []);
+        }
+
+        console.log("all config SQL done");
+    }
+
+
+    _handleAppStateChange(currentAppState) {
+
+        if (currentAppState === "active"){
+
+            PushNotificationIOS.getScheduledLocalNotifications(function(result){
+                //alert("back");
+                //alert(result);
+            })
+        }else{
+            //console.log("out "+currentAppState)
+        }
+    }
+
+    checkCurrent(){
+        var _this = this;
+        PushNotificationIOS.getScheduledLocalNotifications(function(result){
+            //if there are no scheduled notificatios
+            if (result.length < 1){
+                //check if the user has notificatons turned on in settings
+                try {
+                    let keys = ['morning', 'midday', 'evening'];
+                    AsyncStorage.multiGet(keys, (err, stores) => {
+                        stores.map((result, i, store) => {
+                            // get at each store's key/value so you can work with it
+                            let key = store[i][0];
+                            let value = store[i][1];
+
+                            //if there is a notification object for that time of the day
+                            if (value !== null){
+                                let notiObj = JSON.parse(value);
+                                var status = notiObj[0]; //get the status
+
+                                //if set to true, set a new notification for that time of the day
+                                if (status) {
+                                    if (notiObj[1] !== null){
+                                        //schedule a new notification for that time of the day
+                                        _this.scheduleNotification(notiObj[1], key);
+                                    }
+                                }
+                            }
+                        });
+                    });
+                } catch (error) {
+                    alert('AsyncStorage error: ' + error.message);
+                }
+            }else{
+                //if there are scheduled notificatios
+                //check that all the required notifications have been set up
+            }
+        })
+    }
+
+    scheduleNotification(fireDate, timeOfDay){
+        var message = "Today's Motivation is now available.";
+
+        var now = new Date();
+        if (fireDate < now) {
+            // selected date is in the past
+            fireDate =
+                moment(fireDate).add(1, 'days').calendar();
+        }
+
+        NativeModules.CustomPushNotifications.scheduleLocalNotification({
+            fireDate : fireDate,
+            alertBody : message,
+            userInfo : {key: timeOfDay}
+        }, (status) =>{
+            console.log(status)
+        })
+    }
+
+
+    render() {
+        var _panResponder = PanResponder.create({
+            onMoveShouldSetPanResponder: (e, gestureState) => {},
+            onMoveShouldSetPanResponderCapture: (e, gestureState) => {},
+            onStartShouldSetPanResponder: (e, gestureState) => {},
+            onStartShouldSetPanResponderCapture: (e, gestureState) => {},
+            onPanResponderReject: (e, gestureState) => {},
+            onPanResponderGrant: (e, gestureState) => {},
+            onPanResponderStart: (e, gestureState) => {},
+            onPanResponderEnd: (e, gestureState) => {},
+            onPanResponderRelease: (e, gestureState) => {},
+            onPanResponderMove: (e, gestureState) => {},
+            onPanResponderTerminate: (e, gestureState) => {},
+            onPanResponderTerminationRequest: (e, gestureState) => {},
+            onShouldBlockNativeResponder: (e, gestureState) => {},
         });
 
-    },
-
-
-
-    queryEmployees(tx) {
-        console.log("Executing sql...");
-        tx.executeSql('SELECT a.name, b.name as deptName FROM Employees a, Departments b WHERE a.department = b.department_id and a.department=?', [3],
-            this.queryEmployeesSuccess,this.errorCB);
-        //tx.executeSql('SELECT a.name, from TEST', [],() => {},this.errorCB);
-    },
-
-    queryEmployeesSuccess(tx,results) {
-        this.state.progress.push("Query completed");
-        this.setState(this.state);
-        var len = results.rows.length;
-        for (let i = 0; i < len; i++) {
-            let row = results.rows.item(i);
-            this.state.progress.push(`Empl Name: ${row.name}, Dept Name: ${row.deptName}`);
-        }
-        this.setState(this.state);
-    },
-
-    deleteDatabase(){
-        this.state.progress = ["Deleting database"];
-        this.setState(this.state);
-        SQLite.deleteDatabase(database_name, this.deleteCB, this.errorCB);
-    },
-
-    closeDatabase(){
-        var that = this;
-        if (db) {
-            console.log("Closing database ...");
-            that.state.progress.push("Closing database");
-            that.setState(that.state);
-            db.close(that.closeCB,that.errorCB);
-        } else {
-            that.state.progress.push("Database was not OPENED");
-            that.setState(that.state);
-        }
-    },
-
-
-    renderProgressEntry(entry){
-        return (<View style={listStyles.li}>
-            <View>
-                <Text style={listStyles.title}>{entry}</Text>
-            </View>
-        </View>)
-    },
-
-    render(){
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         return (
+            <Router>
+                <Scene key="root" backgroundColor={"#2B2B2B"} navigationBarStyle={navigationBarStyle} titleStyle={titleStyle} backButtonImage={require('./images/back.png')}>
+                    <Scene key="main" component={Main} title="Main" initial={true} hideNavBar={true}  db={db}/>
+                    <Scene key="new" hideNavBar={true} direction="vertical" schema="modal"  title="New Entry"  panHandlers={_panResponder.panHandlers}>
+                        <Scene key="addModal" component={NewEntry} title="Add New" initial={true} db={db}/>
+                    </Scene>
+                    <Scene key="entries" hideNavBar={true} direction="vertical" schema="modal"  title="Entries"  panHandlers={_panResponder.panHandlers}>
+                        <Scene key="entriesModal" component={Entries} title="Add New" initial={true} db={db}/>
+                    </Scene>
+                    <Scene key="settings" hideNavBar={true} direction="vertical" schema="modal"  title="Entries"  panHandlers={_panResponder.panHandlers} >
+                        <Scene key="settingsModal" component={Settings} title="Settings" initial={true}/>
+                    </Scene>
+                    <Scene key="welcome" hideNavBar={true} direction="vertical" schema="modal"  title="Welcome"  panHandlers={_panResponder.panHandlers} >
+                        <Scene key="welcomeModal" component={Welcome} title="Settings" initial={true}/>
+                    </Scene>
+                </Scene>
+            </Router>
+        )
 
+    }
+}
 
-            <View style={[styles.container, {flex:1}]}>
-
-                <View style={{height: NAVBAR_HEIGHT, padding:6, flexDirection: "row", paddingTop: 20}}>
-                    <View style={{height: 44, width: 54}}/>
-                    <View style={{height: 44, flex:1, alignItems: "center", justifyContent: "center"}}>
-                        <Text style={{color:"#A7A9AA", fontSize: 14, fontWeight: "600", textAlign: "center"}}>
-                            TODAY'S MOTIVITATION
-                        </Text>
-                    </View>
-                    <View style={{height: 44, width: 54}}/>
-                </View>
-
-                <View style={{paddingLeft:15, paddingRight:15, flex: 1}}>
-
-                    <View style={{flex: 1, borderRadius: 8, backgroundColor: "#3A3A3A", padding: 22, paddingTop: 0, alignItems: "center", justifyContent: "center"}}>
-
-                        <Text style={{color:"#FAFAFA", fontSize: 18, fontWeight: "700", textAlign: "center", marginBottom: 5, marginTop: -60}}>
-                            17 AUGUST 2016
-                        </Text>
-
-                        <Text style={{color:"#828385", fontSize: 16, fontWeight: "600", textAlign: "center"}}>
-                            Achieving Success
-                        </Text>
-
-                        <View style={{borderWidth: 2, borderColor: "#FAFAFA", backgroundColor: "#fff", height:2, width: 60, borderRadius: 2, margin: 20}}/>
-                        <Text style={{color:"#C1C1C1", fontSize: 18, lineHeight:22, fontWeight: "500", textAlign: "center"}}>
-                            You have to be smart in your training, you have to think it through and plan it, but you also have to chalk your hands, grab the bar and lift it.
-                            That's where so many people go wrong.
-                        </Text>
-
-                    </View>
-
-
-                </View>
-
-                <View style={{height: NAVBAR_HEIGHT, padding:15, flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
-                    <TouchableOpacity style={[styles.navBtn]}
-                                      onPress={this.props.leftPress}>
-                        <Image source={require("./images/List2.png")} style={{width: 29, height: 29}}/>
-                    </TouchableOpacity>
-                    <View style={{height: 44, flex:1, alignItems: "center"}}>
-                        <TouchableOpacity style={[styles.navBtn]} onPress={this.props.leftPress}>
-                            <Image source={require("./images/Add-Filled.png")} style={{width: 35, height: 35}}/>
-                        </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={[styles.navBtn]} onPress={this.props.leftPress}>
-                        <Image source={require("./images/Settings.png")} style={{width: 23, height: 23}}/>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    },
-//
-//<ListView
-//    dataSource={ds.cloneWithRows(this.state.progress)}
-//    renderRow={this.renderProgressEntry}
-//    style={listStyles.liContainer}/>
-
-    //Output Messages
-    errorCB(err) {
-        console.log("error: ",err);
-        this.state.progress.push("Error: "+ (err.message || err));
-        this.setState(this.state);
-        return false;
-    },
-
-    successCB() {
-        console.log("SQL executed ...");
-    },
-
-    openCB() {
-        this.state.progress.push("Database OPEN");
-        this.setState(this.state);
-    },
-
-    closeCB() {
-        this.state.progress.push("Database CLOSED");
-        this.setState(this.state);
-    },
-
-    deleteCB() {
-        console.log("Database DELETED");
-        this.state.progress.push("Database DELETED");
-        this.setState(this.state);
-    },
-
-
-
-});
-
-
-const styles = require('./styles');
-
-AppRegistry.registerComponent('SelfApp', () => SQLiteDemo);
+AppRegistry.registerComponent('SelfApp', () => SelfApp);

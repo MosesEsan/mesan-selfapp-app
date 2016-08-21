@@ -1,6 +1,10 @@
 /**
- * Created by mosesesan on 8/17/16.
+ * Author: Moses Adekunle Esan
+ * Date: 8/2/16.
+ * Project: React Native Authentication Views
+ * Description: Registration, Login and Password Views Styles
  */
+
 'use strict';
 
 import React, {StyleSheet, Dimensions, Platform} from 'react-native';
@@ -8,44 +12,23 @@ import React, {StyleSheet, Dimensions, Platform} from 'react-native';
 
 var {width: windowWidth, height:windowHeight} = Dimensions.get('window');
 
-//alert(windowHeight)
+
+var NAVBAR_HEIGHT = (Platform.OS === 'ios') ? 64 : 54;
+
 const BLACK = "#333333";
 
 var styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#2B2B2B',
-    },
-
-    navBtn:{
-        //position: "absolute",
-        //top: 0,
-        width: 54,
-        height: 44,
-        //flexDirection: "row", overflow:"hidden",
-        justifyContent: "center",
-        alignItems: 'center',
+        //flex: 1,
+        //backgroundColor: 'rgb(184,62,73)',
+        backgroundColor: '#D3222B',
         //borderWidth: 1, borderColor: "red"
+
+        position: "absolute", left: 0,
+        top: 0,
+        bottom: 0, right: 0,
+        height: windowHeight
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     verifyContainer: {
         backgroundColor: '#FFF'
     },
@@ -64,29 +47,24 @@ var styles = StyleSheet.create({
         //flex: 1,
         height:((windowHeight/2) / 2),
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
         //backgroundColor: 'yellow',
-        //backgroundColor: '#3b7abb',
+        //backgroundColor: 'rgb(184,62,73)',
     },
     smallLogoContainer:{
         height:64,
     },
     logo:{
-        height: 50,
-        width: windowWidth - 30,
-        justifyContent: 'center',
-        alignItems: 'center'
+        //height: 50,
+        marginTop: 45,
+        paddingRight: 55
     },
     logoText:{
-        color: "white",
-        fontSize: 30,
-        textAlign: "center"
-    },
-    logoImage:{
-        //color: "white",
-        //fontSize: 30,
-        //textAlign: "center"
-        //borderWidth:1, borderColor: "green",
+        color: "#F2F3F4",
+        fontSize: 31,
+        textAlign: "left",
+        fontWeight: "600",
+        backgroundColor: "transparent"
     },
     infoBox:{
         backgroundColor: "#FFF"
@@ -115,69 +93,110 @@ var styles = StyleSheet.create({
     wrapper:{
         //borderWidth:1, borderColor: "green",
         //backgroundColor: 'purple',
-
         flex: 1,
-        position:"relative"
+        position:"relative",
+        paddingLeft: 20, paddingRight: 20
     },
-//Login
 
+    bgImage:{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        flex: 1,
+        height: windowHeight - 94
+    },
+    overlay:{
+        //backgroundColor: '#ff6666',
+        //backgroundColor: 'rgba(0,0,0,.6)',
+        backgroundColor:  'rgba(69,67,68, .6 )',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        flex: 1,
+        height: windowHeight - 96
+    },
+
+    ///Log In
+    loginContainer: {
+        //backgroundColor: 'rgb(184,62,73)',
+        backgroundColor: 'white',
+        //borderWidth: 1, borderColor: "red",
+        position: "absolute", left: 0,
+        top: 0,
+        bottom: 0, right: 0,
+        height: windowHeight
+    },
     login:{
-        //height: (windowHeight/2) + ((windowHeight/2) / 2),
-        //width: windowWidth,
-        //borderWidth:1, borderColor: "purple",
-        position: "absolute",
-        top: 0, right: 0,
-        left: 0, bottom: 0,
-        backgroundColor: '#3b7abb',
+        //borderWidth: 1, borderColor: "red",
+        height: windowHeight - NAVBAR_HEIGHT,
+        marginTop: NAVBAR_HEIGHT,
+        paddingLeft: 25, paddingRight: 25
     },
-
+    header:{
+        marginTop: 30,
+        paddingRight: 35
+    },
+    headerText2:{
+        color: "#535458",
+        fontSize: 23,
+        textAlign: "left",
+        fontWeight: "600",
+        backgroundColor: "transparent"
+    },
+    subText:{
+        color: "#535458",
+        fontSize: 14,
+        textAlign: "left",
+        fontWeight: "400",
+        backgroundColor: "transparent",
+        marginTop: 10
+    },
     loginWrapper:{
-        paddingLeft: 25,
-        paddingRight: 25,
-        paddingTop:30,
+        marginTop:20,
         height: windowHeight - 210 + 7,
-        position: "relative"
+        position: "relative",
+        //borderWidth: 1, borderColor: "red",
     },
-    loginWrapperExtended:{
-        height: windowHeight - 210 + 7 + (((windowHeight/2) / 2) - 64),
-    },
-    textInputContainer:{
-        //borderWidth:1, borderColor: "purple",
-    },
-
-    hiddenTextInputContainer:{
-        marginTop: -500
-    },
-
     textInputWrapper:{
         marginBottom: 2,
         borderBottomWidth: 1,
-        borderColor: "rgb(249, 184, 156)"
+        borderColor: "#D1D1D2"
     },
-
     textInput:{
         height: 45,
         flex:1,
         fontSize: 15,
-        color: "#fff",
+        color: "#86858A",
         textAlign: "left"
     },
     logInButton:{
-        height: (windowHeight*7.80) /100,
-        borderRadius: 3,
+        height: 48,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:  "#1a3385",
-        marginTop: 20,
-        width: React.Dimensions.get('window').width - 50,
+        backgroundColor:  "#2B2B2B",
+        width: windowWidth /2
+    },
+    socialButton:{
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor:  "#CB1B22",
+        //marginTop: 20,
+        width: windowWidth,
+
+        //width: React.Dimensions.get('window').width - 50,
     },
     resendButton:{
         position: "absolute", bottom: 0
     },
     buttonText:{
         textAlign: 'center',
-        color: "rgb(249, 184, 156)",
-        fontSize: 15    ,
+        color: "#F2F3F4",
+        fontSize: 16    ,
         fontWeight: "600"
     },
 
@@ -188,12 +207,19 @@ var styles = StyleSheet.create({
     },
     //Bottom Section
     bottom:{
-        height: 60,
         width: windowWidth,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: "row"
+        //flexDirection: "row"
     },
+
+    btnContainer:{
+        width: windowWidth,
+        height: 48,
+        flexDirection: "row",
+        //borderWidth:1, borderColor: "purple",
+    },
+
     hiddenBottom:{
         height: 0
     },
@@ -248,7 +274,7 @@ var styles = StyleSheet.create({
         borderRadius: 3,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:  "#1a3385",
+        backgroundColor:  "rgb(129, 29, 55)",
         marginTop: 20,
     },
 });
