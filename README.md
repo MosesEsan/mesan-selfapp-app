@@ -11,7 +11,7 @@ Notifications can be set for the Morning, Midday and Evening.
 
 <a href="http://esandigital.com/blog/2016/08/21/selfapp-demo/">Demo</a>
 
-<b>Screenshots</b>
+<h1>Screenshots</h1>
 <img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" 
 height="500" width="300" align="left" style="border:1px solid green;">
 <img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Home.png" alt="Home" height="500" width="300" align="left" style="border:1px solid green;">
