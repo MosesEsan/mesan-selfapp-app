@@ -232,7 +232,8 @@ export default class Settings extends Component {
         NativeModules.CustomPushNotifications.scheduleLocalNotification({
             fireDate : fireDate,
             alertBody : message,
-            userInfo : {key: timeOfDay}
+            userInfo : {key: timeOfDay},
+            applicationIconBadgeNumber: 1
         }, timeOfDay, (status) =>{
             alert(status)
         })
