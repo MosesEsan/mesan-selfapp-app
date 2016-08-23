@@ -10,7 +10,7 @@ Notifications can be set for the Morning, Midday and Evening
 
 <a href="#">Find out the steps taken to build the app</a>
 
-<a href="#">Demo</a>
+<a href="http://esandigital.com/blog/2016/08/21/selfapp-demo/">Demo</a>
 
 
 
