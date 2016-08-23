@@ -11,18 +11,32 @@ Notifications can be set for the Morning, Midday and Evening
 
 <a href="http://esandigital.com/blog/2016/08/21/selfapp-demo/">Demo</a>
 
-<b>Screenshots (All screenshot available at https://www.dropbox.com/sh/8mok74atxnyrtmq/AAAOqMBqMMAhgsPX5RMq9IpIa?dl=0)</b> 
+<b>Screenshots</b>
 
+<h1>Welcome</h1>
 <img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
 
+<img src="https://github.com/d08115858/DropIt/blob/master/Screenshot/Version%200.2/App%20Store/4%20(640%20x%201096)/Timeline(4).png" alt="Timeline Feed" height="500" width="300" align="left">
 
-<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+<img src="https://github.com/d08115858/DropIt/blob/master/Screenshot/Version%200.2/App%20Store/4%20(640%20x%201096)/NewPost(4).png" alt="Add Post" height="500" width="300" align="left">
 
+<img src="https://github.com/d08115858/DropIt/blob/master/Screenshot/Version%200.1/App%20Store/4%20(640%20x%201096)/Comments(4).png" alt="Comments" height="500" width="300" align="left">
 
-<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+<img src="https://github.com/d08115858/DropIt/blob/master/Screenshot/Version%200.1/App%20Store/4%20(640%20x%201096)/Profile(4).png" alt="Profile" height="500" width="300" align="left">
 
-<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+<h1>Home</h1>
+<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Home.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+<br>
+<br>
 
+<h1>Entries</h1>
+<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Entries.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+
+<h1>Add New Entry</h1>
+<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Add New.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
+
+<h1>Settings</h1>
+<img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Settings.png" alt="Welcome" height="500" width="300" align="left" style="border:1px solid green;">
 
 <h2>TODO</h2>
 <ul>
