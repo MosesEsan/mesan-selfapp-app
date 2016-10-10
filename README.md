@@ -9,7 +9,7 @@ Notifications can be set for the Morning, Midday and Evening.
 
 <a href="#">Find out the steps taken to build the app</a>
 
-<a href="http://esandigital.com/blog/2016/08/21/selfapp-demo/">Demo</a>
+<a href="https://appetize.io/app/adnf8jukm238qgwj8fnmxczuq4?device=iphone5s&scale=75&orientation=portrait&osVersion=9.3">Demo</a>
 
 <h1>Screenshots</h1>
 <img src="https://github.com/MosesEsan/mesan-selfapp-app/blob/master/Screenshots/Welcome.png" alt="Welcome" 

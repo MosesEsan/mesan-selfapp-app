@@ -111,6 +111,9 @@ var SQLiteDemo = React.createClass({
     },
 
     render(){
+        var date = moment().format('Do MMMM YYYY');
+        date = date.toUpperCase();
+
         return (
 
 
@@ -138,12 +141,12 @@ var SQLiteDemo = React.createClass({
 
                         <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
 
-                            <Text style={{color:"#FAFAFA", fontSize: 19, fontWeight: "700", textAlign: "center", marginBottom: 5, marginTop: -60}}>
-                                {moment().format('Do MMMM YYYY')}
+                            <Text style={{color:"#FAFAFA", fontSize: 19, fontWeight: "700", textAlign: "center", marginBottom: 6, marginTop: -60}}>
+                                {date}
                             </Text>
                             {
                                 (this.state.data !== null) ?
-                                    <Text style={{color:"#828385", fontSize: 17, fontWeight: "600", textAlign: "center"}}>
+                                    <Text style={{color:"#828385", fontSize: 18, fontWeight: "600", textAlign: "center"}}>
                                         {this.state.data.title}
                                     </Text>
                                     :
